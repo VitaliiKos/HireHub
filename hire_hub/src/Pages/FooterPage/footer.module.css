@@ -1,0 +1,14 @@
+.footer {
+    min-height: 40px;
+    background-color: #282c34;
+    display: flex;
+    justify-content: center;
+    padding-right: 28px;
+    font-weight: 600;
+    font-size: 20px;
+    position: fixed;
+    bottom: 0;
+    width: 100vw;
+    z-index: 2;
+    color: gold;
+}
