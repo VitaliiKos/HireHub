@@ -1,6 +1,10 @@
 import {FC} from 'react';
 import {useTranslation} from "react-i18next";
 import {ILanguages} from "../../interfaces";
+import MenuItem from '@mui/material/MenuItem';
+import FormControl from '@mui/material/FormControl';
+import Select from '@mui/material/Select';
+
 
 const LanguageSwitcher: FC = () => {
     const lngs: ILanguages = {
@@ -16,21 +20,19 @@ const LanguageSwitcher: FC = () => {
     }
 
     return (
-        <div className="align">
-            <select
-                className="custom-select"
-                style={{width: 70, margin: '0 10px'}}
-                onChange={handleChangeLanguage}
+        <FormControl required sx={{m: '5px', width: 80}}>
+            <Select
+                sx={{p: 0}}
                 value={currentLang}
+                onChange={handleChangeLanguage}
             >
                 {
                     Object.keys(lngs).map((lng) => (
-                        < option key={lng} value={lng}>{lngs[lng].nativeName}</option>
+                        <MenuItem key={lng} value={lng}> {lng} </MenuItem>
                     ))
                 }
-            </select>
-
-        </div>
+            </Select>
+        </FormControl>
     );
 };
 

@@ -27,13 +27,11 @@ const getHealthCheck = createAsyncThunk<IHealthCheck>(
     "systemInfoSlice/getHealthCheck",
     async (_, {rejectWithValue}) => {
         try {
-            console.log('#################################')
             const {data} = await healthCheckServices.healthCheck();
-            console.log('datadatadatadatadatadatadatadatadata')
             return data
         } catch (e) {
             const err = e as AxiosError
-            return rejectWithValue(err.response?.data)
+            return rejectWithValue(err.message)
         }
 
     }
@@ -52,7 +50,7 @@ const systemInfoSlice = createSlice({
                 state.status_code = status_code
             })
             .addMatcher(isRejectedWithValue(), (state, action) => {
-                state.errors = action.payload as string | null
+                state.errors = action.payload as string
             })
 })
 
@@ -61,6 +59,5 @@ const {reducer: systemInfoReducer, actions} = systemInfoSlice;
 const systemInfoAction = {
     ...actions,
     getHealthCheck,
-    // getBaseStatus
 };
 export {systemInfoReducer, systemInfoAction}

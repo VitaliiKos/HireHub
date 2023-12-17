@@ -5,7 +5,6 @@ import {mainUrls} from "../config";
 
 class HealthCheckServices {
     healthCheck(): IRes<IHealthCheck> {
-        console.log(mainUrls.healthCheck)
         return apiServices.get(mainUrls.healthCheck.healthCheck)
     }
 }

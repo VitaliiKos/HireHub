@@ -6,5 +6,22 @@
   "profile": "Profile",
   "logout": "Logout",
   "dashboard": "Dashboard",
-  "account": "Account"
+  "account": "Account",
+  "sign_in": "Sign in",
+  "auth": {
+    "password": "Password",
+    "email": "Email Address",
+    "remember_me": "Remember me",
+    "forgot_password": "Forgot password?",
+    "sign_up": "Don't have an account? Sign Up"
+  },
+  "register": {
+    "sign_up": "Sign Up",
+    "sign_in": "Already have an account? Sign in",
+    "firstName": "First Name",
+    "lastName": "Last Name",
+    "email": "Email Address",
+    "password": "Password",
+    "confirmPassword": "Confirm Password"
+  }
 }

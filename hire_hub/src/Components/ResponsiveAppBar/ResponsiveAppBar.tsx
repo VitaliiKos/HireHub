@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useEffect} from 'react';
 import React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
@@ -8,60 +8,45 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import Tooltip from '@mui/material/Tooltip';
-import MenuItem from '@mui/material/MenuItem';
 import AdbIcon from '@mui/icons-material/Adb';
-import {RouterEndpoints} from "../../routes";
-import {NavLink} from "react-router-dom";
 
 import {useTranslation} from "react-i18next";
-import {LanguageSwitcher} from "../../Components";
-import css from './ResponsiveAppBar.module.css';
-import {IMenu, ISettingsMenu, MenuKeys, SettingsMenuKeys} from "../../interfaces";
+import {RouterEndpoints} from "../../routes";
+import {UserSettingsPage} from "../../Pages";
+import {useAppDispatch, useAppSelector} from "../../hooks";
+import {authActions} from "../../Store/slice";
+import {BurgerMenuItem, LanguageSwitcher, NavbarItem} from "../../Components";
 
-const pages: IMenu<MenuKeys> = {
-    home: {pageUrl: RouterEndpoints.home},
-    users: {pageUrl: RouterEndpoints.users},
-    companies: {pageUrl: RouterEndpoints.companies},
-    about: {pageUrl: RouterEndpoints.about},
-}
-
-const settings: ISettingsMenu<SettingsMenuKeys> = {
-    profile: {pageUrl: RouterEndpoints.owner_profile},
-    account: {pageUrl: RouterEndpoints.account},
-    dashboard: {pageUrl: RouterEndpoints.dashboard},
-    logout: {pageUrl: RouterEndpoints.logout},
-}
 
 const ResponsiveAppBar: FC = () => {
+
+    const {me} = useAppSelector(state => state.authReducer);
+    const dispatch = useAppDispatch();
+
 
     const {t} = useTranslation();
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
-    const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
-    };
-    const handleOpenUserMenu = (event: React.MouseEvent<HTMLElement>) => {
-        setAnchorElUser(event.currentTarget);
     };
 
     const handleCloseNavMenu = () => {
         setAnchorElNav(null);
     };
 
-    const handleCloseUserMenu = () => {
-        setAnchorElUser(null);
-    };
+    useEffect(() => {
+        if (!me) {
+            dispatch(authActions.me())
+        }
+    }, [me])
 
     return (
         <AppBar
             sx={{
                 bgcolor: '#4db6ac',
-                maxWidth: 'xl',
+                width: 'xl',
                 position: "static"
             }}
         >
@@ -86,6 +71,7 @@ const ResponsiveAppBar: FC = () => {
                     >
                         LOGO
                     </Typography>
+
 
                     <Box sx={{flexGrow: 1, display: {xs: 'flex', md: 'none'}}}>
                         <IconButton
@@ -116,19 +102,23 @@ const ResponsiveAppBar: FC = () => {
                                 display: {xs: 'block', md: 'none'},
                             }}
                         >
-                            {
-                                Object.keys(pages).map((page) =>
-                                    <MenuItem onClick={handleCloseNavMenu} key={page}>
-                                        <Typography textAlign="center" className={css.burgerMenuItem}>
-                                            <NavLink
-                                                to={pages[page as MenuKeys].pageUrl}>{t(page as MenuKeys)}</NavLink>
-                                        </Typography>
-                                    </MenuItem>
-                                )
+                            <BurgerMenuItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.home}
+                                            key={RouterEndpoints.home} translate={t('home')}/>
+                            <BurgerMenuItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.about}
+                                            key={RouterEndpoints.about} translate={t('about')}/>
+                            <BurgerMenuItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.users}
+                                            key={RouterEndpoints.users} translate={t('users')}/>
+                            <BurgerMenuItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.companies}
+                                            key={RouterEndpoints.companies} translate={t('companies')}/>
+                            {!me &&
+                                <BurgerMenuItem handleCloseNavMenu={handleCloseNavMenu}
+                                                item_url={RouterEndpoints.sign_in}
+                                                key={RouterEndpoints.sign_in} translate={t('sign_in')}/>
                             }
 
                         </Menu>
                     </Box>
+
                     <AdbIcon sx={{display: {xs: 'flex', md: 'none'}, mr: 1}}/>
                     <Typography
                         variant="h5"
@@ -148,56 +138,29 @@ const ResponsiveAppBar: FC = () => {
                     >
                         LOGO
                     </Typography>
+
                     <Box sx={{flexGrow: 1, display: {xs: 'none', md: 'flex'}}}>
-                        {
-                            Object.keys(pages).map((page) =>
-                                <Button
-                                    key={page}
-                                    className={css.menuItem}
-                                    onClick={handleCloseNavMenu}
-                                    sx={{my: 2, color: 'white', display: 'block'}}
-                                >
-                                    <NavLink to={pages[page as MenuKeys].pageUrl}>{t(page as MenuKeys)}</NavLink>
-                                </Button>
-                            )
+                        <NavbarItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.home}
+                                    key={RouterEndpoints.home} translate={t('home')}/>
+                        <NavbarItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.about}
+                                    key={RouterEndpoints.about} translate={t('about')}/>
+                        {me &&
+                            <>
+                                <NavbarItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.users}
+                                            key={RouterEndpoints.users} translate={t('users')}/>
+                                <NavbarItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.companies}
+                                            key={RouterEndpoints.companies} translate={t('companies')}/>
+                            </>
                         }
                     </Box>
+
                     <LanguageSwitcher/>
 
-                    <Box sx={{flexGrow: 0}}>
-                        <Tooltip title="Open settings">
-                            <IconButton onClick={handleOpenUserMenu} sx={{p: 0}}>
-                                <Avatar alt="Remy Sharp"
-                                        src="https://www.clipartmax.com/png/middle/217-2171074_what-we-have-to-offer-young-man-icon.png"/>
-                            </IconButton>
-                        </Tooltip>
-                        <Menu
-                            sx={{mt: '45px'}}
-                            id="menu-appbar"
-                            anchorEl={anchorElUser}
-                            anchorOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            keepMounted
-                            transformOrigin={{
-                                vertical: 'top',
-                                horizontal: 'right',
-                            }}
-                            open={Boolean(anchorElUser)}
-                            onClose={handleCloseUserMenu}
-                        >
-                            {
-                                Object.keys(settings).map((setting) =>
-                                    <MenuItem onClick={handleCloseUserMenu} key={setting}>
-                                        <Typography textAlign="center">
-                                            {t(setting as SettingsMenuKeys)}
-                                        </Typography>
-                                    </MenuItem>
-                                )
-                            }
-                        </Menu>
-                    </Box>
+                    {me ? <UserSettingsPage/> :
+                        <NavbarItem handleCloseNavMenu={handleCloseNavMenu} item_url={RouterEndpoints.sign_in}
+                                    key={RouterEndpoints.sign_in} translate={t('sign_in')}/>
+                    }
+
                 </Toolbar>
             </Container>
         </AppBar>

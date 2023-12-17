@@ -10,5 +10,6 @@ export const RouterEndpoints = {
     account: 'account',
     dashboard: 'dashboard',
     logout: 'logout',
+    activate: 'auth/users/activation',
     notFound: '*',
 };

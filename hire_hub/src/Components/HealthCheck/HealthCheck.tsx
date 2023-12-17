@@ -19,7 +19,9 @@ const HealthCheck: FC = () => {
                 <h4>Status_code: {status_code}</h4>
             </div>
             <div>
-                <h4>{JSON.stringify(errors)}</h4>
+                {errors &&
+                <h4>{errors}</h4>
+                }
             </div>
         </div>
     );
